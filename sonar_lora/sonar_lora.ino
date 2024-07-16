@@ -16,8 +16,8 @@
 
 //CLEFS A MODIFIER SELON TTN
 const char* APP_EUI = "0000000000000000";                     
-const char* DEV_EUI = "70B3D57ED0068BEE";                     
-const char* APP_Key = "85948CABD5D6883B436476ECF8447F8A";
+const char* DEV_EUI = "0000000000000000";                     
+const char* APP_Key = "00000000000000000000000000000000";
 
 int temps = 60; // Indiquez dans cette ligne la fréquence d'envoi de données, en secondes. (Ne pas aller plus bas que 3minutes, soit 180sec)
 
