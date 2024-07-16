@@ -26,7 +26,7 @@ void setup() {
  
 /** Fonction loop() */
 void loop() {
-  digitalWrite(GPIO1, HIGH);
+  digitalWrite(GPIO7, HIGH);
   delay(1000);
   /* 1. Lance une mesure de distance en envoyant une impulsion HIGH de 10µs sur la broche TRIGGER */
   digitalWrite(TRIGGER_PIN, HIGH);
@@ -44,7 +44,7 @@ void loop() {
   Serial.println(distance);
   Serial.println(sizeof(distance));
 
-  digitalWrite(GPIO1, LOW);
+  digitalWrite(GPIO7, LOW);
   delay(1000); 
   /* Délai d'attente pour éviter d'afficher trop de résultats à la seconde */
   delay(500);

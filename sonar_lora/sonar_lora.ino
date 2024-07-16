@@ -14,20 +14,30 @@
 #include <algorithm>
 
 
-/*
- * set LoraWan_RGB to Active,the RGB active in loraWan
- * RGB red means sending;
- * RGB purple means joined done;
- * RGB blue means RxWindow1;
- * RGB yellow means RxWindow2;
- * RGB green means received done;
- */
+//CLEFS A MODIFIER SELON TTN
+const char* APP_EUI = "0000000000000000";                     
+const char* DEV_EUI = "70B3D57ED0068BEE";                     
+const char* APP_Key = "85948CABD5D6883B436476ECF8447F8A";
 
-//Set these OTAA parameters to match your app/node in TTN
-static uint8_t devEui[] = { 0x70, 0xB3, 0xD5, 0x7E, 0xD0, 0x06, 0x57, 0x0F };
-static uint8_t appEui[] = { 0xA8, 0x40, 0x41, 0x00, 0x00, 0x00, 0x01, 0x01 };
-static uint8_t appKey[] = { 0x14, 0xC7, 0x60, 0xDD, 0xE7, 0xC3, 0x91, 0xAA, 0x0A, 0x6F, 0x8C, 0xAD, 0x92, 0x52, 0x29, 0x82 };
+int temps = 60; // Indiquez dans cette ligne la fréquence d'envoi de données, en secondes. (Ne pas aller plus bas que 3minutes, soit 180sec)
+
+uint16_t userChannelsMask[6]={ 0x00FF,0x0000,0x0000,0x0000,0x0000,0x0000 };
+static uint8_t counter=0;
 uint8_t lora_data[3];
+uint8_t downlink ;
+
+
+const int AppEUI_len = strlen(APP_EUI);
+const int DevEUI_len = strlen(DEV_EUI);
+const int AppKey_len = strlen(APP_Key);
+
+byte AppEUI_clefConvertie[8];
+byte DevEUI_clefConvertie[8];
+byte AppKey_clefConvertie[16];
+
+uint8_t appEui[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+uint8_t devEui[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+uint8_t appKey[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 uint16_t userChannelsMask[6]={ 0x00FF,0x0000,0x0000,0x0000,0x0000,0x0000 };
 
@@ -66,10 +76,30 @@ static void lowPowerSleep(uint32_t sleeptime)
   TimerStop( &sleepTimer );
 }
 
+
+void convertirClef(const char* clef, byte* clefConvertie, int longueur) {
+    for (int i = 0; i < longueur; i += 2) {
+        char byteStr[3] = {clef[i], clef[i + 1], '\0'};
+        clefConvertie[i / 2] = strtol(byteStr, NULL, 16);
+    }
+}
+
+void remplirTableau(uint8_t* tableau, byte* clefConvertie, int longueur) {
+    for (int i = 0; i < longueur / 2; i++) {
+        tableau[i] = clefConvertie[i];
+    }
+}
 ///////////////////////////////////////////////////
 void setup() {
 	Serial.begin(115200);
 
+  convertirClef(APP_EUI, AppEUI_clefConvertie, AppEUI_len);
+  convertirClef(DEV_EUI, DevEUI_clefConvertie, DevEUI_len);
+  convertirClef(APP_Key, AppKey_clefConvertie, AppKey_len);
+      
+  remplirTableau(appEui, AppEUI_clefConvertie, AppEUI_len);
+  remplirTableau(devEui, DevEUI_clefConvertie, DevEUI_len);
+  remplirTableau(appKey, AppKey_clefConvertie, AppKey_len);
 
   /* Initialise les broches */
   pinMode(TRIGGER_PIN, OUTPUT);
