@@ -102,6 +102,7 @@ void setup() {
   remplirTableau(appKey, AppKey_clefConvertie, AppKey_len);
 
   /* Initialise les broches */
+  pinMode(GPIO7, OUTPUT);
   pinMode(TRIGGER_PIN, OUTPUT);
   digitalWrite(TRIGGER_PIN, LOW); // La broche TRIGGER doit être à LOW au repos
   pinMode(ECHO_PIN, INPUT);
@@ -137,7 +138,9 @@ void loop()
   delay(10);
   uint8_t voltage = getBatteryVoltage()/50; //Tension en %
   counter++;  
-
+  digitalWrite(GPIO7, HIGH);
+  delay(1000);
+  
   while (inde < n) {
 
   digitalWrite(TRIGGER_PIN, HIGH);
@@ -152,6 +155,9 @@ void loop()
   inde++; // Incrémentez l'indice
   }
 
+  digitalWrite(GPIO7, LOW);
+  delay(1000);
+  
   // Calcul de la médiane et de la moyenne
   float mediane = calculerMedian();
   float moyenneFiltree = calculerMoyenneSansOutliers();
