@@ -17,7 +17,8 @@ void setup() {
    
   /* Initialise le port série */
   Serial.begin(115200);
-   
+  pinMode(GPIO7, OUTPUT);
+
   /* Initialise les broches */
   pinMode(TRIGGER_PIN, OUTPUT);
   digitalWrite(TRIGGER_PIN, LOW); // La broche TRIGGER doit être à LOW au repos
