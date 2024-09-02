@@ -16,7 +16,7 @@ float distance;
 
 void setup()
 {
- Serial.begin(57600);
+ Serial.begin(115200);
  softwareSerial.begin(9600); 
 }
 
