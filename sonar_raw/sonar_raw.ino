@@ -3,9 +3,10 @@
  */
 
 /* Constantes pour les broches */
-const byte TRIGGER_PIN = GPIO4; // Broche TRIGGER
-const byte ECHO_PIN = GPIO5;    // Broche ECHO
- 
+const byte TRIGGER_PIN = GPIO2; // Broche TRIGGER
+const byte ECHO_PIN = GPIO3;    // Broche ECHO
+const byte TRANS_PIN = GPIO4;    // Broche ECHO
+
 /* Constantes pour le timeout */
 const unsigned long MEASURE_TIMEOUT = 25000UL; // 25ms = ~8m à 340m/s
 
@@ -17,7 +18,7 @@ void setup() {
    
   /* Initialise le port série */
   Serial.begin(115200);
-  pinMode(GPIO7, OUTPUT);
+  pinMode(TRANS_PIN, OUTPUT);
 
   /* Initialise les broches */
   pinMode(TRIGGER_PIN, OUTPUT);
@@ -27,7 +28,7 @@ void setup() {
  
 /** Fonction loop() */
 void loop() {
-  digitalWrite(GPIO7, HIGH);
+  digitalWrite(TRANS_PIN, HIGH);
   delay(1000);
   /* 1. Lance une mesure de distance en envoyant une impulsion HIGH de 10µs sur la broche TRIGGER */
   digitalWrite(TRIGGER_PIN, HIGH);
@@ -38,14 +39,15 @@ void loop() {
   long measure = pulseIn(ECHO_PIN, HIGH, MEASURE_TIMEOUT);
    
   /* 3. Calcul la distance à partir du temps mesuré */
-  uint16_t distance = measure / 2.0 * SOUND_SPEED *10;
+  uint16_t distance = measure / 2.0 * SOUND_SPEED;
    
   /* Affiche les résultats en mm, cm et m */
   Serial.print(F("Distance: "));
-  Serial.println(distance);
+  Serial.print(distance);
+  Serial.println(" mm");
   Serial.println(sizeof(distance));
 
-  digitalWrite(GPIO7, LOW);
+  digitalWrite(TRANS_PIN, LOW);
   delay(1000); 
   /* Délai d'attente pour éviter d'afficher trop de résultats à la seconde */
   delay(500);
