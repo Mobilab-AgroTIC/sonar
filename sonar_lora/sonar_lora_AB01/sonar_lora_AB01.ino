@@ -33,9 +33,9 @@ const int n = 10;       // Nombre de valeurs à prendre en compte
 float mesures[n];       // Tableau pour stocker les mesures (type float)
 int inde = 0;          // Indice actuel dans le tableau
 
-const byte TRANSISTOR_PIN = GPIO1; // Broche TRANSISTOR
-const byte TRIGGER_PIN = GPIO4; // Broche TRIGGER
-const byte ECHO_PIN = GPIO5;    // Broche ECHO
+const byte TRANS_PIN = GPIO4; // Broche TRANSISTOR
+const byte TRIGGER_PIN = GPIO2; // Broche TRIGGER
+const byte ECHO_PIN = GPIO3;    // Broche ECHO
 const unsigned long MEASURE_TIMEOUT = 25000UL; // 25ms = ~8m 340m/s
 const float SOUND_SPEED = 340.0 / 1000;
 
@@ -77,7 +77,7 @@ void remplirTableau(uint8_t* tableau, byte* clefConvertie, int longueur) {
 }
 ///////////////////////////////////////////////////
 void setup() {
-	Serial.begin(115200);
+  Serial.begin(115200);
 
   convertirClef(APP_EUI, AppEUI_clefConvertie, AppEUI_len);
   convertirClef(DEV_EUI, DevEUI_clefConvertie, DevEUI_len);
@@ -88,7 +88,7 @@ void setup() {
   remplirTableau(appKey, AppKey_clefConvertie, AppKey_len);
 
   /* Initialise les broches */
-  pinMode(TRANSISTOR_PIN, OUTPUT);
+  pinMode(TRANS_PIN, OUTPUT);
   pinMode(TRIGGER_PIN, OUTPUT);
   digitalWrite(TRIGGER_PIN, LOW); // La broche TRIGGER doit être à LOW au repos
   pinMode(ECHO_PIN, INPUT);
@@ -124,7 +124,7 @@ void loop()
   delay(10);
   uint8_t voltage = getBatteryVoltage()/50; //Tension en %
   counter++;  
-  digitalWrite(TRANSISTOR_PIN, HIGH);
+  digitalWrite(TRANS_PIN, HIGH);
   delay(1000);
   
   while (inde < n) {
@@ -134,14 +134,14 @@ void loop()
   digitalWrite(TRIGGER_PIN, LOW);
   
   long measure = pulseIn(ECHO_PIN, HIGH, MEASURE_TIMEOUT);
-  uint16_t dist = measure / 2.0 * SOUND_SPEED *10;
+  uint16_t dist = measure / 2.0 * SOUND_SPEED;
   
   mesures[inde] = dist; // Lecture de la valeur du capteur
   delay(20); // Attendez 20ms avant la prochaine lecture
   inde++; // Incrémentez l'indice
   }
 
-  digitalWrite(TRANSISTOR_PIN, LOW);
+  digitalWrite(TRANS_PIN, LOW);
   delay(1000);
   
   // Calcul de la médiane et de la moyenne
